@@ -1,0 +1,16 @@
+class match:
+
+    def __init__(self, date, home_team, rival_team, num_goals, total_team_goals):
+        self.date = date
+        self.home_team = home_team
+        self.rival_team = rival_team
+        self.num_goals = num_goals
+        self.total_team_goals = total_team_goals
+
+    def print(self):
+        print(" Date: ", self.date,
+              " |Home Team: ",self.home_team,
+              " |Rival Team: ", self.rival_team,
+              " |Number of Goals: ", self.num_goals,
+              " |Team's goals: ", self.total_team_goals
+            )
