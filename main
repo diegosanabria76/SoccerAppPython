@@ -1,0 +1,98 @@
+import sys
+from match import match
+from team import team
+import datetime
+
+
+def calc_points(home_goals, away_goals):
+    if home_goals > away_goals:
+        return 3
+    if home_goals == away_goals:
+        return 1
+    if home_goals < away_goals:
+        return 0
+
+
+def print_table(my_table):
+    for a_match in my_table:
+        print("")
+
+
+exit = False
+match_list = []
+team_table = {}
+while not exit:
+    print("""
+  1. Register a Match
+  2. See results
+  3. Classification Table
+  4.Exit/Quit
+  """)
+    option = input("What would you like to do? ")
+    if option == "1":
+
+        print("\n Enter the match details")
+        try:
+            date_entry = input('Enter a date in YYYY-MM-DD format:  ')
+            year, month, day = map(int, date_entry.split('-'))
+            my_date = datetime.date(year, month, day)
+        except:
+            print("Invalid Date input, try again ")
+            continue
+
+        home_team_name = input("\n Enter the home Team name: ")
+        rival_team_name = input("\n Enter the rival Team name: ")
+        goals_scored = input("\n Enter the number of goals scored: ")
+        if not goals_scored.strip().isdigit():
+            print("Number of goals must be a number")
+            continue
+        away_goals = input("\n Enter the number of rival team goals: ")
+        if not away_goals.strip().isdigit():
+            print("Number of goals must be a number")
+            continue
+        goals_scored = int(goals_scored)
+        away_goals = int(away_goals)
+
+        my_match = match(my_date, home_team_name, rival_team_name, goals_scored, away_goals)
+        my_match.print()
+        match_list.append(my_match)
+        home_team = team(home_team_name, goals_scored, calc_points(goals_scored, away_goals))
+        away_team = team(rival_team_name, away_goals, calc_points(away_goals, goals_scored))
+
+        if home_team.team_name in team_table:
+            team_table[home_team.team_name].add_result(home_team)
+        else:
+            team_table[home_team.team_name] = home_team
+
+        if away_team.team_name in team_table:
+            team_table[away_team.team_name].add_result(away_team)
+        else:
+            team_table[away_team.team_name] = away_team
+
+    elif option == "2":
+        print("\n Displaying results")
+        for a_match in match_list:
+            a_match.print()
+
+    elif option == "3":
+        print("\n Displaying the Table")
+        teams_list = list(team_table.values())
+        new_list = []
+
+        while teams_list:
+            minimum = teams_list[0].points  # arbitrary number in list
+            for val in teams_list:
+                if val.points < minimum:
+                    minimum = val.points
+            new_list.append(val)
+            teams_list.remove(val)
+
+        new_list.reverse()
+        for result in new_list:
+            result.print()
+
+    elif option == "4":
+        print("\n Leaving the application")
+        break
+    else:
+        print("\n Not a Valid Choice Try again")
